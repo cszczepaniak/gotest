@@ -30,6 +30,22 @@ func NoError(t testing.TB, err error) {
 	}
 }
 
+// NilPointer asserts that v is a nil pointer.
+func NilPointer[T *E, E any](t testing.TB, v T) {
+	t.Helper()
+	if v != nil {
+		t.Fatalf("expected nil, got %v", v)
+	}
+}
+
+// NonNilPointer asserts that v is a non-nil pointer.
+func NonNilPointer[T *E, E any](t testing.TB, v T) {
+	t.Helper()
+	if v == nil {
+		t.Fatal("expected non-nil value")
+	}
+}
+
 func ErrorIs(t testing.TB, err, exp error) {
 	t.Helper()
 

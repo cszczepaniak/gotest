@@ -177,3 +177,52 @@ func TestErrorIs(t *testing.T) {
 		}
 	})
 }
+
+func TestNilPointer(t *testing.T) {
+	t.Run("nil pointer passes", func(t *testing.T) {
+		f := &fakeTB{TB: t}
+		var p *int
+		NilPointer(f, p)
+		if f.fatalCalled {
+			t.Errorf("NilPointer with nil pointer should not have called Fatal, got: %s", f.fatalMsg)
+		}
+	})
+
+	t.Run("non-nil pointer fails", func(t *testing.T) {
+		f := &fakeTB{TB: t}
+		x := 42
+		NilPointer(f, &x)
+		if !f.fatalCalled {
+			t.Error("NilPointer with non-nil pointer should have called Fatal")
+		}
+	})
+
+	t.Run("nil pointer to struct passes", func(t *testing.T) {
+		f := &fakeTB{TB: t}
+		var p *struct{ X int }
+		NilPointer(f, p)
+		if f.fatalCalled {
+			t.Errorf("NilPointer with nil *struct should not have called Fatal, got: %s", f.fatalMsg)
+		}
+	})
+}
+
+func TestNonNilPointer(t *testing.T) {
+	t.Run("non-nil pointer passes", func(t *testing.T) {
+		f := &fakeTB{TB: t}
+		x := 42
+		NonNilPointer(f, &x)
+		if f.fatalCalled {
+			t.Errorf("NotNilPointer with non-nil pointer should not have called Fatal, got: %s", f.fatalMsg)
+		}
+	})
+
+	t.Run("nil pointer fails", func(t *testing.T) {
+		f := &fakeTB{TB: t}
+		var p *int
+		NonNilPointer(f, p)
+		if !f.fatalCalled {
+			t.Error("NotNilPointer with nil pointer should have called Fatal")
+		}
+	})
+}
